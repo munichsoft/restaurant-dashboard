@@ -300,47 +300,7 @@ const menuData: MenuItem[] = [
     Gerichtnummer: "79",
     Bezeichnung: "Falafel-Teller",
     Preis: "7.5",
-  },
-  {
-    Gerichtkategorie: "Finger Food",
-    Bezeichnung: "Chicken Wings",
-    Zutaten: "8 knusprige Chicken Wings",
-    Preis: "6",
-  },
-  {
-    Gerichtkategorie: "Finger Food",
-    Bezeichnung: "Chicken Strippers",
-    Zutaten: "8 herzhaft panierte Hähnchenbruststreifen",
-    Preis: "6",
-  },
-  {
-    Gerichtkategorie: "Finger Food",
-    Bezeichnung: "Chicken Box",
-    Zutaten: "6 Chicken Wings, 6 Chicken Strippers, 6 Chicken Nuggets",
-    Preis: "13.5",
-  },
-  {
-    Gerichtkategorie: "Finger Food",
-    Bezeichnung: "Pommes",
-    Preis: "3",
-  },
-  {
-    Gerichtkategorie: "Finger Food",
-    Bezeichnung: "6er Chicken Nuggets",
-    Preis: "4.5",
-  },
-  {
-    Gerichtkategorie: "Finger Food",
-    Bezeichnung: "9er Chicken Nuggets",
-    Preis: "5.7",
-  },
-  {
-    Gerichtkategorie: "Deals",
-    Bezeichnung: "Burger Deal",
-    Zutaten: "Burger nach Wahl + Pommes + 0,33l Getränk",
-    Preis: "9.9",
-  },
-  // Add more deals here
+  }
 ]
 
 export default function Menu() {
@@ -416,7 +376,7 @@ export default function Menu() {
 
 const TableBody = ({ children }: { children: React.ReactNode }) => <tbody>{children}</tbody>
 const TableRow = ({ children }: { children: React.ReactNode }) => <tr>{children}</tr>
-const TableCell = ({ children }: { children: React.ReactNode }) => (
-  <td className="border border-gray-300 p-2">{children}</td>
+const TableCell = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <td className={`border border-gray-300 p-2 ${className}`}>{children}</td>
 )
 

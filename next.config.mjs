@@ -25,8 +25,8 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'https://67ed-2a03-fc82-236-a000-6d7e-9c55-260b-e108.ngrok-free.app/:path*',
-        //destination: 'https://restaurant-vmqg.onrender.com/:path*',
+        //destination: 'https://67ed-2a03-fc82-236-a000-6d7e-9c55-260b-e108.ngrok-free.app/:path*',
+        destination: 'https://restaurant-vmqg.onrender.com/:path*',
       },
     ]
   },
