@@ -35,26 +35,52 @@ export default function DashboardPage() {
   const { t } = useTranslation()
   const [selectedItem, setSelectedItem] = useState<{ name: string; type: "dish" | "category" } | null>(null)
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const fetchedOrders = await getOrders("1")
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-        const todaysOrders = fetchedOrders.filter((order) => {
-          const orderDate = new Date(order.timestamp)
-          orderDate.setHours(0, 0, 0, 0)
-          return orderDate.getTime() === today.getTime()
-        })
-        console.log(todaysOrders)
-        setOrders(todaysOrders)
-      } catch (error) {
-        console.error("Failed to fetch orders:", error)
-        // Optionally, setOrders to an empty array or display an error message
-      }
+// Add this helper function at the top of your component
+const filterAndSortOrders = (orders: Order[]) => {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  
+  return orders
+    .filter((order) => {
+      const orderDate = new Date(order.timestamp)
+      orderDate.setHours(0, 0, 0, 0)
+      return orderDate.getTime() === today.getTime()
+    })
+    .sort((a, b) => {
+      // Sort in descending order (newest first)
+      return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    })
+}
+
+// Initial fetch useEffect
+useEffect(() => {
+  const fetchOrders = async () => {
+    try {
+      const fetchedOrders = await getOrders("1")
+      const processedOrders = filterAndSortOrders(fetchedOrders)
+      setOrders(processedOrders)
+    } catch (error) {
+      console.error("Failed to fetch orders:", error)
     }
-    fetchOrders()
-  }, [])
+  }
+  fetchOrders()
+}, [])
+
+// Interval fetch useEffect
+useEffect(() => {
+  const fetchNewOrders = async () => {
+    try {
+      const newOrders = await getOrders("1")
+      const processedOrders = filterAndSortOrders(newOrders)
+      setOrders(processedOrders)
+    } catch (error) {
+      console.error("Failed to fetch new orders:", error)
+    }
+  }
+
+  const interval = setInterval(fetchNewOrders, 30000) // Fetch every 30 seconds
+  return () => clearInterval(interval)
+}, [])
 
   const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0)
   const pendingOrders = orders.filter((order) => order.status === "pending").length
@@ -71,31 +97,7 @@ export default function DashboardPage() {
     return Math.round(totalPrepTime / preparedOrders.length)
   }
 
-  /*useEffect(() => {
-    const interval = setInterval(() => {
-      const fetchNewOrders = async () => {
-        try {
-          const newOrders = await getOrders("1")
-          const today = new Date()
 
-          today.setHours(0, 0, 0, 0)
-
-          const todaysOrders = newOrders.filter((order) => {
-            const orderDate = new Date(order.timestamp)
-            orderDate.setHours(0, 0, 0, 0)
-            return orderDate.getTime() === today.getTime()
-          })
-
-          setOrders(todaysOrders)
-        } catch (error) {
-          console.error("Failed to fetch new orders:", error)
-        }
-      }
-      fetchNewOrders()
-    }, 500000) // Fetch new orders every 5 minutes
-
-    return () => clearInterval(interval)
-  }, [])*/
 
   const handleOrderUpdate = (updatedOrder: Order) => {
     setOrders((currentOrders) => currentOrders.map((order) => (order.orderId === updatedOrder.orderId ? updatedOrder : order)))
