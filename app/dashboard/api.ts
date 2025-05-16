@@ -15,6 +15,9 @@ export const getOrders = async (restaurantId: string): Promise<Order[]> => {
       customerName: item.user_name,
       items: item.items,
       lastStatusChange: new Date(item.updated_at),
+      deliveryMethod: item.order_type,
+      chatTranscript: JSON.parse(item.conversation_history || "[]"), // Parse conversation_history
+      deliveryAddress: item.delivery_address,
     }));
 
     return orders;

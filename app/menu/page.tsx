@@ -1,382 +1,279 @@
 "use client"
-import type { MenuItem } from "@/types/menu"
-import type React from "react"
 
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
 
-const menuData: MenuItem[] = [
+const menuData = [
   {
-    Gerichtkategorie: "Pizza",
-    Standardzutaten: "Tomatensoße, Käse",
-    Gerichtnummer: "1",
-    Bezeichnung: "Margherita",
-    Zutaten: "Tomatensoße, Mozarella",
-    Preis: "6",
+    category: "Pizza",
+    items: [
+      {
+        number: 1,
+        name: "Margherita",
+        ingredients: "Tomatensoße, Mozarella",
+        sizes: [
+          { size: "Groß", price: 6 },
+          { size: "Klein", price: 4.5 },
+        ],
+      },
+      {
+        number: 2,
+        name: "Salami",
+        ingredients: "Tomatensoße, Mozarella, Salami",
+        sizes: [
+          { size: "Groß", price: 7 },
+          { size: "Klein", price: 5.5 },
+        ],
+      },
+      {
+        number: 3,
+        name: "Schinken",
+        ingredients: "Tomatensoße, Mozarella, Schinken",
+        sizes: [
+          { size: "Groß", price: 7 },
+          { size: "Klein", price: 5.5 },
+        ],
+      },
+      {
+        number: 4,
+        name: "Hawaii",
+        ingredients: "Tomatensoße, Mozarella, Schinken, Ananas",
+        sizes: [
+          { size: "Groß", price: 7.5 },
+          { size: "Klein", price: 6 },
+        ],
+      },
+      {
+        number: 5,
+        name: "Vegetaria",
+        ingredients: "Tomatensoße, Mozarella, Gemüse",
+        sizes: [
+          { size: "Groß", price: 7.5 },
+          { size: "Klein", price: 6 },
+        ],
+      },
+      {
+        number: 6,
+        name: "Tonno",
+        ingredients: "Tomatensoße, Mozarella, Thunfisch",
+        sizes: [
+          { size: "Groß", price: 8 },
+          { size: "Klein", price: 6.5 },
+        ],
+      },
+      {
+        number: 7,
+        name: "Calzone",
+        ingredients: "Tomatensoße, Mozarella, Schinken, Käse",
+        sizes: [{ size: "Groß", price: 8 }],
+      },
+    ],
   },
   {
-    Gerichtkategorie: "Pizza",
-    Standardzutaten: "Tomatensoße, Käse",
-    Gerichtnummer: "2",
-    Bezeichnung: "Salami",
-    Zutaten: "Tomatensoße, Mozarella, Salami",
-    Preis: "7",
+    category: "Pasta",
+    items: [
+      {
+        number: 8,
+        name: "Spaghetti Napoli",
+        ingredients: "Spaghetti, Tomatensoße, Basilikum",
+        sizes: [{ size: "-", price: 6 }],
+      },
+      {
+        number: 9,
+        name: "Spaghetti Aglio e Olio",
+        ingredients: "Spaghetti, Knoblauch, Olivenöl, Chili",
+        sizes: [{ size: "-", price: 6.5 }],
+      },
+      {
+        number: 10,
+        name: "Spaghetti Carbonara",
+        ingredients: "Spaghetti, Eier, Pancetta, Pecorino Romano",
+        sizes: [{ size: "-", price: 8 }],
+      },
+      {
+        number: 11,
+        name: "Spaghetti Bolognese",
+        ingredients: "Spaghetti, Bolognese Soße",
+        sizes: [{ size: "-", price: 8 }],
+      },
+      {
+        number: 12,
+        name: "Spaghetti Arrabiata",
+        ingredients: "Spaghetti, Tomatensoße, Chili",
+        sizes: [{ size: "-", price: 7 }],
+      },
+    ],
   },
   {
-    Gerichtkategorie: "Pizza",
-    Standardzutaten: "Tomatensoße, Käse",
-    Gerichtnummer: "3",
-    Bezeichnung: "Schinken",
-    Zutaten: "Tomatensoße, Mozarella, Schinken",
-    Preis: "7",
+    category: "Auflauf",
+    items: [
+      {
+        number: 54,
+        name: "Veggi",
+        ingredients: "Tomaten-Sahne-Sauce, Paprika, Mais, Champignons, Zwiebeln, Brokkoli",
+        sizes: [{ size: "-", price: 8 }],
+      },
+      {
+        number: 55,
+        name: "Hawaii",
+        ingredients: "Tomaten-Sahne-Sauce, Schinken, Ananas",
+        sizes: [{ size: "-", price: 7.5 }],
+      },
+      {
+        number: 56,
+        name: "Hähnchen",
+        ingredients: "Curry-Sahne-Sauce, Hähnchen, Ananas, Zwiebeln",
+        sizes: [{ size: "-", price: 7.5 }],
+      },
+      {
+        number: 57,
+        name: "Sucuk",
+        ingredients: "Tomaten-Sahne-Sauce, Knoblauchwurst, Zwiebeln, Tomaten, Oliven",
+        sizes: [{ size: "-", price: 7.5 }],
+      },
+      {
+        number: 58,
+        name: "Kebab",
+        ingredients: "Kebabfleisch, Curry-Sahne-Sauce, Peperoni, Zwiebeln, Oliven",
+        sizes: [{ size: "-", price: 9 }],
+      },
+    ],
   },
   {
-    Gerichtkategorie: "Pizza",
-    Standardzutaten: "Tomatensoße, Käse",
-    Gerichtnummer: "4",
-    Bezeichnung: "Hawaii",
-    Zutaten: "Tomatensoße, Mozarella, Schinken, Ananas",
-    Preis: "7.5",
+    category: "Salat",
+    items: [
+      {
+        number: 59,
+        name: "Mista",
+        ingredients: "Romanasalat, Rucola, Champignon, Kirschtomaten, Karotten, Gurken",
+        sizes: [{ size: "-", price: 7.5 }],
+      },
+      {
+        number: 60,
+        name: "Nizza",
+        ingredients: "Romanasalat, Rucola, Thunfisch, gekochtes Ei, Oliven, Zwiebeln",
+        sizes: [{ size: "-", price: 8 }],
+      },
+      {
+        number: 61,
+        name: "Cesare",
+        ingredients: "Romanasalat, Croutons, Parmesan, Hähnchenbrustfilet",
+        sizes: [{ size: "-", price: 8 }],
+      },
+      {
+        number: 62,
+        name: "Burrata",
+        ingredients: "Romanasalat, Rucola, Gurken, Kirschtomaten, Burrata",
+        sizes: [{ size: "-", price: 8 }],
+      },
+      {
+        number: 63,
+        name: "Pollo Salat",
+        ingredients: "Romanasalat, Rucola, Kirschtomaten, Mais, Gurken, Hähnchenbrustfilet",
+        sizes: [{ size: "-", price: 8 }],
+      },
+    ],
   },
-  {
-    Gerichtkategorie: "Pizza",
-    Standardzutaten: "Tomatensoße, Käse",
-    Gerichtnummer: "5",
-    Bezeichnung: "Vegetaria",
-    Zutaten: "Tomatensoße, Mozarella, Gemüse",
-    Preis: "7.5",
-  },
-  {
-    Gerichtkategorie: "Pizza",
-    Standardzutaten: "Tomatensoße, Käse",
-    Gerichtnummer: "6",
-    Bezeichnung: "Tonno",
-    Zutaten: "Tomatensoße, Mozarella, Thunfisch",
-    Preis: "8",
-  },
-  {
-    Gerichtkategorie: "Pizza",
-    Standardzutaten: "Tomatensoße, Käse",
-    Gerichtnummer: "7",
-    Bezeichnung: "Calzone",
-    Zutaten: "Tomatensoße, Mozarella, Schinken, Käse",
-    Preis: "8",
-  },
-  {
-    Gerichtkategorie: "Pasta",
-    Standardzutaten: "Nudeln, Tomatensoße",
-    Gerichtnummer: "8",
-    Bezeichnung: "Spaghetti Napoli",
-    Zutaten: "Spaghetti, Tomatensoße, Basilikum",
-    Preis: "6",
-  },
-  {
-    Gerichtkategorie: "Pasta",
-    Standardzutaten: "Nudeln, Tomatensoße",
-    Gerichtnummer: "9",
-    Bezeichnung: "Spaghetti Aglio e Olio",
-    Zutaten: "Spaghetti, Knoblauch, Olivenöl, Chili",
-    Preis: "6.5",
-  },
-  {
-    Gerichtkategorie: "Pasta",
-    Standardzutaten: "Nudeln, Tomatensoße",
-    Gerichtnummer: "10",
-    Bezeichnung: "Spaghetti Carbonara",
-    Zutaten: "Spaghetti, Eier, Pancetta, Pecorino Romano",
-    Preis: "8",
-  },
-  {
-    Gerichtkategorie: "Pasta",
-    Standardzutaten: "Nudeln, Tomatensoße",
-    Gerichtnummer: "11",
-    Bezeichnung: "Spaghetti Bolognese",
-    Zutaten: "Spaghetti, Bolognese Soße",
-    Preis: "8",
-  },
-  {
-    Gerichtkategorie: "Pasta",
-    Standardzutaten: "Nudeln, Tomatensoße",
-    Gerichtnummer: "12",
-    Bezeichnung: "Spaghetti Arrabiata",
-    Zutaten: "Spaghetti, Tomatensoße, Chili",
-    Preis: "7",
-  },
-  {
-    Gerichtkategorie: "Auflauf",
-    Standardzutaten: "Wird mit Nudeln zubereitet und Goudakäse überbacken",
-    Gerichtnummer: "54",
-    Bezeichnung: "Veggi",
-    Zutaten: "saftiger Tomaten-Sahne-Sauce, Paprika, Mais, Champignons, Zwiebeln und Brokkoli",
-    Preis: "8",
-  },
-  {
-    Gerichtkategorie: "Auflauf",
-    Standardzutaten: "Wird mit Nudeln zubereitet und Goudakäse überbacken",
-    Gerichtnummer: "55",
-    Bezeichnung: "Hawaii",
-    Zutaten: "Tomaten-Sahne-Sauce, Schinken und Ananas",
-    Preis: "7.5",
-  },
-  {
-    Gerichtkategorie: "Auflauf",
-    Standardzutaten: "Wird mit Nudeln zubereitet und Goudakäse überbacken",
-    Gerichtnummer: "56",
-    Bezeichnung: "Hähnchen",
-    Zutaten: "Curry-Sahne-Sauce, Hähnchen, Ananas und Zwiebeln",
-    Preis: "7.5",
-  },
-  {
-    Gerichtkategorie: "Auflauf",
-    Standardzutaten: "Wird mit Nudeln zubereitet und Goudakäse überbacken",
-    Gerichtnummer: "57",
-    Bezeichnung: "Sucuk",
-    Zutaten: "Tomaten-Sahne-Sauce, Knoblauchwurst (Sucuk), Zwiebeln, Tomaten und Oliven",
-    Preis: "7.5",
-  },
-  {
-    Gerichtkategorie: "Auflauf",
-    Standardzutaten: "Wird mit Nudeln zubereitet und Goudakäse überbacken",
-    Gerichtnummer: "58",
-    Bezeichnung: "Kebab",
-    Zutaten: "Kebabfleisch, Curry-Sahne-Sauce, Peperoni, Zwiebeln und Oliven",
-    Preis: "9",
-  },
-  {
-    Gerichtkategorie: "Salat",
-    Standardzutaten: "Dressing: Joghurt, Honig-Senf, Cocktail",
-    Gerichtnummer: "59",
-    Bezeichnung: "Mista",
-    Zutaten: "Romanasalat, Rucola, Champginon, Kirschtomaten, Karotten, rote Zwiebeln, Gurken, Paprika, Weißkäse",
-    Preis: "7.5",
-  },
-  {
-    Gerichtkategorie: "Salat",
-    Standardzutaten: "Dressing: Joghurt, Honig-Senf, Cocktail",
-    Gerichtnummer: "60",
-    Bezeichnung: "Nizza",
-    Zutaten: "Romanasalat, Rucola, Thunfisch, gekochtes Ei, Oliven, Zwiebeln",
-    Preis: "8",
-  },
-  {
-    Gerichtkategorie: "Salat",
-    Standardzutaten: "Dressing: Joghurt, Honig-Senf, Cocktail",
-    Gerichtnummer: "61",
-    Bezeichnung: "Cesare",
-    Zutaten: "Romanasalat, Croutons, Parmesan, Hähnchenbrustfilet",
-    Preis: "8",
-  },
-  {
-    Gerichtkategorie: "Salat",
-    Standardzutaten: "Dressing: Joghurt, Honig-Senf, Cocktail",
-    Gerichtnummer: "62",
-    Bezeichnung: "Burrata",
-    Zutaten: "Romanasalat, Rucola, Gurken, Kirschtomaten, Burrata",
-    Preis: "8",
-  },
-  {
-    Gerichtkategorie: "Salat",
-    Standardzutaten: "Dressing: Joghurt, Honig-Senf, Cocktail",
-    Gerichtnummer: "63",
-    Bezeichnung: "Pollo Salat",
-    Zutaten: "Romanasalat, Rucola, Kirschtomaten, Zwiebeln, Mais, Gurken und Hähnchenbrustfilet",
-    Preis: "8",
-  },
-  {
-    Gerichtkategorie: "Salat",
-    Standardzutaten: "Dressing: Joghurt, Honig-Senf, Cocktail",
-    Gerichtnummer: "64",
-    Bezeichnung: "Tonno Salat",
-    Zutaten: "Romanasalat, Rucola, Thunfisch, Mais und rote Zwiebeln",
-    Preis: "8",
-  },
-  {
-    Gerichtkategorie: "Salat",
-    Standardzutaten: "Dressing: Joghurt, Honig-Senf, Cocktail",
-    Gerichtnummer: "65",
-    Bezeichnung: "Garnelen Salat",
-    Zutaten: "Romanasalat, Rucola, Garnelen, Tomaten, Gurken und rote Zwiebeln",
-    Preis: "9",
-  },
-  {
-    Gerichtkategorie: "Salat",
-    Standardzutaten: "Dressing: Joghurt, Honig-Senf, Cocktail",
-    Gerichtnummer: "66",
-    Bezeichnung: "Kebab Salat",
-    Zutaten: "Kebab vom Drehspieß, Tomaten, Gurken, Zwiebeln",
-    Preis: "8",
-  },
-  {
-    Gerichtkategorie: "Baguettes",
-    Standardzutaten:
-      "Mit Salatbeilage und einer Sauce nach Wahl: Knoblauch, Kräuter-, Curry-, Joghurt- oder Cocktailsauce",
-    Gerichtnummer: "67",
-    Bezeichnung: "Baguette Prosciutto",
-    Zutaten: "Schinken, Tomaten, Gurken",
-    Preis: "6.5",
-  },
-  {
-    Gerichtkategorie: "Baguettes",
-    Standardzutaten:
-      "Mit Salatbeilage und einer Sauce nach Wahl: Knoblauch, Kräuter-, Curry-, Joghurt- oder Cocktailsauce",
-    Gerichtnummer: "68",
-    Bezeichnung: "Baguette Salami",
-    Zutaten: "Salami, Tomaten, Gurken",
-    Preis: "6.5",
-  },
-  {
-    Gerichtkategorie: "Baguettes",
-    Standardzutaten:
-      "Mit Salatbeilage und einer Sauce nach Wahl: Knoblauch, Kräuter-, Curry-, Joghurt- oder Cocktailsauce",
-    Gerichtnummer: "69",
-    Bezeichnung: "Baguette Hawaii",
-    Zutaten: "Schinken, Ananas",
-    Preis: "7",
-  },
-  {
-    Gerichtkategorie: "Baguettes",
-    Standardzutaten:
-      "Mit Salatbeilage und einer Sauce nach Wahl: Knoblauch, Kräuter-, Curry-, Joghurt- oder Cocktailsauce",
-    Gerichtnummer: "70",
-    Bezeichnung: "Baguette Tonno",
-    Zutaten: "Thunfisch, rote Zwiebeln",
-    Preis: "7",
-  },
-  {
-    Gerichtkategorie: "Baguettes",
-    Standardzutaten:
-      "Mit Salatbeilage und einer Sauce nach Wahl: Knoblauch, Kräuter-, Curry-, Joghurt- oder Cocktailsauce",
-    Gerichtnummer: "71",
-    Bezeichnung: "Baguette Kebab",
-    Zutaten: "Kebab vom Drehspieß, Zwiebeln, Tomaten, Gurken",
-    Preis: "7.5",
-  },
-  {
-    Gerichtkategorie: "Baguettes",
-    Standardzutaten:
-      "Mit Salatbeilage und einer Sauce nach Wahl: Knoblauch, Kräuter-, Curry-, Joghurt- oder Cocktailsauce",
-    Gerichtnummer: "72",
-    Bezeichnung: "Baguette Hackfleisch",
-    Zutaten: "Rinderhackfleisch, Jalapenos, gekochtes Ei",
-    Preis: "7.5",
-  },
-  {
-    Gerichtkategorie: "Kebab",
-    Standardzutaten: "Krautsalat, Blattsalat, Tsatsiki, Cocktailsauce, rote Zwiebeln",
-    Gerichtnummer: "74",
-    Bezeichnung: "Kebab Pita",
-    Preis: "6",
-  },
-  {
-    Gerichtkategorie: "Kebab",
-    Standardzutaten: "Krautsalat, Blattsalat, Tsatsiki, Cocktailsauce, rote Zwiebeln",
-    Gerichtnummer: "75",
-    Bezeichnung: "Kebab-Dürüm",
-    Preis: "6.5",
-  },
-  {
-    Gerichtkategorie: "Kebab",
-    Standardzutaten: "Krautsalat, Blattsalat, Tsatsiki, Cocktailsauce, rote Zwiebeln",
-    Gerichtnummer: "76",
-    Bezeichnung: "Kebab-Teller mit Pommes",
-    Preis: "8.5",
-  },
-  {
-    Gerichtkategorie: "Kebab",
-    Standardzutaten: "Krautsalat, Blattsalat, Tsatsiki, Cocktailsauce, rote Zwiebeln",
-    Gerichtnummer: "77",
-    Bezeichnung: "Falafel Pita",
-    Preis: "5",
-  },
-  {
-    Gerichtkategorie: "Kebab",
-    Standardzutaten: "Krautsalat, Blattsalat, Tsatsiki, Cocktailsauce, rote Zwiebeln",
-    Gerichtnummer: "78",
-    Bezeichnung: "Falafel Dürüm",
-    Preis: "6",
-  },
-  {
-    Gerichtkategorie: "Kebab",
-    Standardzutaten: "Krautsalat, Blattsalat, Tsatsiki, Cocktailsauce, rote Zwiebeln",
-    Gerichtnummer: "79",
-    Bezeichnung: "Falafel-Teller",
-    Preis: "7.5",
-  }
 ]
 
-export default function Menu() {
-  const [searchQuery, setSearchQuery] = useState("")
+export default function MenuPage() {
+  const { t } = useTranslation()
   const [categoryFilter, setCategoryFilter] = useState("all")
+  const [searchQuery, setSearchQuery] = useState("")
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value)
-  }
-
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setCategoryFilter(e.target.value)
-  }
-
-  const filteredMenuData = menuData.filter(
-    (item) =>
-      (categoryFilter === "all" || item.Gerichtkategorie === categoryFilter) &&
-      ((item.Bezeichnung && item.Bezeichnung.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (item.Zutaten && item.Zutaten.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (item.Standardzutaten && item.Standardzutaten.toLowerCase().includes(searchQuery.toLowerCase()))),
+  const filteredMenu = menuData.filter(
+    (category) =>
+      categoryFilter === "all" || category.category.toLowerCase() === categoryFilter.toLowerCase(),
+  ).flatMap((category) =>
+    category.items.filter(
+      (item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.ingredients.toLowerCase().includes(searchQuery.toLowerCase()),
+    ),
   )
 
+  const categories = ["all", ...new Set(menuData.map((c) => c.category))]
+
   return (
-    <div>
-      <div className="flex justify-between mb-4">
-        <input
-          type="text"
-          placeholder="Suche..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="border border-gray-300 px-3 py-2 rounded"
-        />
-        <select
-          value={categoryFilter}
-          onChange={handleCategoryChange}
-          className="border border-gray-300 px-3 py-2 rounded"
-        >
-          <option value="all">Alle Kategorien</option>
-          {Array.from(new Set(menuData.map((item) => item.Gerichtkategorie))).map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
-      </div>
-      <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr>
-            <th className="border border-gray-300 p-2">Nr.</th>
-            <th className="border border-gray-300 p-2">Bezeichnung</th>
-            <th className="border border-gray-300 p-2">Zutaten</th>
-            <th className="border border-gray-300 p-2">Größe</th>
-            <th className="border border-gray-300 p-2 text-right">Preis</th>
-          </tr>
-        </thead>
-        <TableBody>
-          {filteredMenuData.map((item) => (
-            <TableRow key={item.Gerichtnummer}>
-              <TableCell>{item.Gerichtnummer}</TableCell>
-              <TableCell className="font-medium">{item.Bezeichnung}</TableCell>
-              <TableCell>{item.Zutaten || item.Standardzutaten || "-"}</TableCell>
-              <TableCell>{item.Größen ? item.Größen.map((g) => g.Größe).join(", ") : "-"}</TableCell>
-              <TableCell className="text-right">
-                {item.Größen ? item.Größen.map((g) => `${g.Größe}: ${g.Preis} €`).join(", ") : `${item.Preis} €`}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </table>
+    <div className="flex-1 space-y-4 p-8 pt-6">
+      <h2 className="text-3xl font-bold tracking-tight">{t("menu")}</h2>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t("filters")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-2">
+              <Label>{t("category")}</Label>
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder={t("selectCategory")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category === "all" ? t("allCategories") : category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label>{t("search")}</Label>
+              <Input
+                placeholder={t("searchPlaceholder")}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">{t("number")}</TableHead>
+                <TableHead>{t("name")}</TableHead>
+                <TableHead>{t("ingredients")}</TableHead>
+                <TableHead className="text-left">{t("size")}</TableHead>
+                <TableHead className="text-right">{t("price")}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredMenu.map((item) => (
+                <TableRow key={item.number}>
+                  <TableCell>{item.number}</TableCell>
+                  <TableCell className="font-medium">{item.name}</TableCell>
+                  <TableCell>{item.ingredients}</TableCell>
+                  <TableCell colSpan={2}>
+                    <div className="flex flex-col divide-y divide-gray-200">
+                      {item.sizes.map((size) => (
+                        <div 
+                          key={`${item.number}-${size.size}`}
+                          className="flex justify-between items-center py-1"
+                        >
+                          <span>{size.size !== "-" ? size.size : ""}</span>
+                          <span>{size.price.toFixed(2)} €</span>
+                        </div>
+                      ))}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   )
 }
-
-const TableBody = ({ children }: { children: React.ReactNode }) => <tbody>{children}</tbody>
-const TableRow = ({ children }: { children: React.ReactNode }) => <tr>{children}</tr>
-const TableCell = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <td className={`border border-gray-300 p-2 ${className}`}>{children}</td>
-)
 
