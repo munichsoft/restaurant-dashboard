@@ -12,7 +12,7 @@ interface WebSocketContextType {
 
 const WebSocketContext = createContext<WebSocketContextType | undefined>(undefined)
 
-const WS_URL = "wss://restaurant-vmqg.onrender.com:5001" // Socket.io server URL
+const WS_URL = "wss://restaurant-vmqg.onrender.com" // Socket.io server URL
 
 export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const socketRef = useRef<Socket | null>(null)
