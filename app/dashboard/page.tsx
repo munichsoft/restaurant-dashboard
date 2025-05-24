@@ -86,9 +86,9 @@ useEffect(() => {
   const handleNewOrder = () => {
     fetchNewOrders()
   }
-  addEventListener("newOrder", handleNewOrder)
+  addEventListener("new_order", handleNewOrder)
   return () => {
-    removeEventListener("newOrder", handleNewOrder)
+    removeEventListener("new_order", handleNewOrder)
   }
 }, [])
 
