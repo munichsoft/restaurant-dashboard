@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation"
 import type React from "react"
 import { LanguageProvider } from "@/contexts/LanguageContext"
 import { useTranslation } from "react-i18next"
+import { WebSocketProvider } from "@/contexts/WebSocketContext"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -93,35 +94,37 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body className={cn("min-h-screen bg-background font-sans antialiased", inter.className)}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <LanguageProvider>
-            <div className="flex min-h-screen flex-col">
-              {isLoggedIn ? (
-                <div className="flex-1 flex">
-                  <SidebarNav
-                    sidebarVisible={sidebarVisible}
-                    sidebarCollapsed={sidebarCollapsed}
-                    toggleSidebarCollapse={toggleSidebarCollapse}
-                    toggleContextMenu={toggleContextMenu}
-                    contextMenuVisible={contextMenuVisible}
-                    handleLogout={handleLogout}
-                    handleThemeChange={handleThemeChange}
-                    username={username}
-                    sidebarNavItems={sidebarNavItems}
-                  />
-                  <main
-                    className={cn(
-                      "flex-1 overflow-hidden transition-all duration-300 ease-in-out",
-                      sidebarVisible ? (sidebarCollapsed ? "ml-16" : "ml-64") : "ml-0",
-                    )}
-                  >
-                    <div className="p-4 relative">
-                      {children}
-                    </div>
-                  </main>
-                </div>
-              ) : (
-                children
-              )}
-            </div>
+            <WebSocketProvider>
+              <div className="flex min-h-screen flex-col">
+                {isLoggedIn ? (
+                  <div className="flex-1 flex">
+                    <SidebarNav
+                      sidebarVisible={sidebarVisible}
+                      sidebarCollapsed={sidebarCollapsed}
+                      toggleSidebarCollapse={toggleSidebarCollapse}
+                      toggleContextMenu={toggleContextMenu}
+                      contextMenuVisible={contextMenuVisible}
+                      handleLogout={handleLogout}
+                      handleThemeChange={handleThemeChange}
+                      username={username}
+                      sidebarNavItems={sidebarNavItems}
+                    />
+                    <main
+                      className={cn(
+                        "flex-1 overflow-hidden transition-all duration-300 ease-in-out",
+                        sidebarVisible ? (sidebarCollapsed ? "ml-16" : "ml-64") : "ml-0",
+                      )}
+                    >
+                      <div className="p-4 relative">
+                        {children}
+                      </div>
+                    </main>
+                  </div>
+                ) : (
+                  children
+                )}
+              </div>
+            </WebSocketProvider>
           </LanguageProvider>
         </ThemeProvider>
       </body>

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts"
 import DetailedChart from "./DetailedChart"
 import { getOrders } from "./api"
+import { useWebSocket } from "@/contexts/WebSocketContext"
 
 // Sample analytics data
 const dishSalesData = [
@@ -34,6 +35,7 @@ export default function DashboardPage() {
   const [activeFilter, setActiveFilter] = useState<"all" | Order["status"]>("all")
   const { t } = useTranslation()
   const [selectedItem, setSelectedItem] = useState<{ name: string; type: "dish" | "category" } | null>(null)
+  const { addEventListener, removeEventListener } = useWebSocket()
 
 // Add this helper function at the top of your component
 const filterAndSortOrders = (orders: Order[]) => {
@@ -60,26 +62,34 @@ useEffect(() => {
       const processedOrders = filterAndSortOrders(fetchedOrders)
       setOrders(processedOrders)
     } catch (error) {
+      // Optionally show a toast or notification here
       console.error("Failed to fetch orders:", error)
     }
   }
   fetchOrders()
 }, [])
 
-// Interval fetch useEffect
-useEffect(() => {
-  const fetchNewOrders = async () => {
-    try {
-      const newOrders = await getOrders("1")
-      const processedOrders = filterAndSortOrders(newOrders)
-      setOrders(processedOrders)
-    } catch (error) {
-      console.error("Failed to fetch new orders:", error)
-    }
+// Helper for fetching new orders (used by WebSocket event)
+const fetchNewOrders = async () => {
+  try {
+    const newOrders = await getOrders("1")
+    const processedOrders = filterAndSortOrders(newOrders)
+    setOrders(processedOrders)
+  } catch (error) {
+    // Optionally show a toast or notification here
+    console.error("Failed to fetch new orders:", error)
   }
+}
 
-  const interval = setInterval(fetchNewOrders, 30000) // Fetch every 30 seconds
-  return () => clearInterval(interval)
+// Real-time order updates using WebSocket context
+useEffect(() => {
+  const handleNewOrder = () => {
+    fetchNewOrders()
+  }
+  addEventListener("newOrder", handleNewOrder)
+  return () => {
+    removeEventListener("newOrder", handleNewOrder)
+  }
 }, [])
 
   const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0)
