@@ -35,7 +35,7 @@ export default function DashboardPage() {
   const [activeFilter, setActiveFilter] = useState<"all" | Order["status"]>("all")
   const { t } = useTranslation()
   const [selectedItem, setSelectedItem] = useState<{ name: string; type: "dish" | "category" } | null>(null)
-  const { addEventListener, removeEventListener } = useWebSocket()
+  const { addEventListener, removeEventListener, newOrderFlag, setNewOrderFlag } = useWebSocket()
 
 // Add this helper function at the top of your component
 const filterAndSortOrders = (orders: Order[]) => {
@@ -55,19 +55,19 @@ const filterAndSortOrders = (orders: Order[]) => {
 }
 
 // Initial fetch useEffect
-useEffect(() => {
-  const fetchOrders = async () => {
-    try {
-      const fetchedOrders = await getOrders("1")
-      const processedOrders = filterAndSortOrders(fetchedOrders)
-      setOrders(processedOrders)
-    } catch (error) {
-      // Optionally show a toast or notification here
-      console.error("Failed to fetch orders:", error)
-    }
-  }
-  fetchOrders()
-}, [])
+// useEffect(() => {
+//   const fetchOrders = async () => {
+//     try {
+//       const fetchedOrders = await getOrders("1")
+//       const processedOrders = filterAndSortOrders(fetchedOrders)
+//       setOrders(processedOrders)
+//     } catch (error) {
+//       // Optionally show a toast or notification here
+//       console.error("Failed to fetch orders:", error)
+//     }
+//   }
+//   fetchOrders()
+// }, [])
 
 // Helper for fetching new orders (used by WebSocket event)
 const fetchNewOrders = async () => {
@@ -91,6 +91,12 @@ useEffect(() => {
     removeEventListener("new_order", handleNewOrder)
   }
 }, [])
+
+useEffect(() => {
+    if (newOrderFlag) {
+      fetchNewOrders().finally(() => setNewOrderFlag(false))
+    }
+  }, [newOrderFlag])
 
   const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0)
   const pendingOrders = orders.filter((order) => order.status === "pending").length
