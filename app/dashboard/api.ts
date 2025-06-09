@@ -3,8 +3,13 @@ import axios from 'axios';
 
 export const getOrders = async (restaurantId: string): Promise<Order[]> => {
   try {
-    const response = await axios.get(`/api/orderList?restaurant_id=${restaurantId}`);
-    const data = response.data;
+    const response = await axios.get(`/api/orderList?restaurant_id=${restaurantId}`)
+    const data = response.data
+
+    if (!data || !Array.isArray(data)) {
+      // Defensive: if data is null or not an array, return empty array
+      return []
+    }
 
     // Map the API response to the Order type, parsing date strings into Date objects
     const orders: Order[] = data.map((item: any) => ({
@@ -18,12 +23,12 @@ export const getOrders = async (restaurantId: string): Promise<Order[]> => {
       deliveryMethod: item.order_type,
       chatTranscript: JSON.parse(item.conversation_history || "[]"), // Parse conversation_history
       deliveryAddress: item.delivery_address,
-    }));
+    }))
 
-    return orders;
+    return orders
   } catch (error: any) {
-    console.error("Failed to fetch orders:", error);
-    throw error; // Re-throw the error so the component can handle it
+    console.error("Failed to fetch orders:", error)
+    return [] // Return empty array on error to avoid null.map crash
   }
 }
 
